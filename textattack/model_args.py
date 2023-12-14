@@ -279,15 +279,24 @@ class ModelArgs:
                 with open(os.path.join(args.model, "config.json")) as f:
                     config = json.load(f)
                 model_class = config["architectures"]
-                if (
-                    model_class == "LSTMForClassification"
-                    or model_class == "WordCNNForClassification"
-                ):
-                    model = eval(
-                        f"textattack.models.helpers.{model_class}.from_pretrained({args.model})"
-                    )
+                if model_class == "LSTMForClassification":
+
+                    model = textattack.models.helpers.LSTMForClassification.from_pretrained(args.model)
+
                     model = textattack.models.wrappers.PyTorchModelWrapper(
+
                         model, model.tokenizer
+
+                    )
+
+                elif model_class == "WordCNNForClassification":
+
+                    model = textattack.models.helpers.WordCNNForClassification.from_pretrained(args.model)
+
+                    model = textattack.models.wrappers.PyTorchModelWrapper(
+
+                        model, model.tokenizer
+
                     )
                 else:
                     # assume the model is from HuggingFace.
